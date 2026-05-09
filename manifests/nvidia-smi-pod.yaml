@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nvidia-smi-pod
+  namespace: monitoring
+spec:
+  restartPolicy: Never
+  tolerations:
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+  containers:
+  - name: nvidia-smi
+    image: nvidia/cuda:12.2.0-base-ubuntu22.04
+    command: ["nvidia-smi"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1

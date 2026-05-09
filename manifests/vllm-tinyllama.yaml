@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-tinyllama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-tinyllama
+  template:
+    metadata:
+      labels:
+        app: vllm-tinyllama
+    spec:
+      tolerations:
+      - key: sku
+        operator: Equal
+        value: gpu
+        effect: NoSchedule
+      containers:
+      - name: vllm
+        image: vllm/vllm-openai:latest
+        args: [--model, TinyLlama/TinyLlama-1.1B-Chat-v1.0, --dtype, float16, --max-model-len, "2048"]
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            nvidia.com/gpu: 1

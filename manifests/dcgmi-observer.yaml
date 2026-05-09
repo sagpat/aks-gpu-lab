@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dcgmi-observer
+  namespace: monitoring
+spec:
+  restartPolicy: Never
+  tolerations:
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+  containers:
+  - name: dcgmi
+    image: nvcr.io/nvidia/cloud-native/dcgm:3.3.0-1-ubuntu22.04
+    command: ["/bin/sh", "-c"]
+    args:
+    - |
+      nv-hostengine &
+      sleep 5
+      dcgmi dmon -e 100,101,110,111,140,191 -d 500
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    securityContext:
+      privileged: true

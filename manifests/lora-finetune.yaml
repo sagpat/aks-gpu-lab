@@ -1,0 +1,139 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lora-finetune
+spec:
+  restartPolicy: Never
+  tolerations:
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+  volumes:
+  - name: dataset
+    configMap:
+      name: excel-dataset
+  containers:
+  - name: trainer
+    image: pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    volumeMounts:
+    - name: dataset
+      mountPath: /data
+    command: [/bin/bash, -c]
+    args:
+    - |
+      pip install -q "transformers==4.40.0" "peft==0.10.0" "accelerate==0.29.0" datasets
+      python3 << 'EOF'
+      import json
+      import torch
+      from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer
+      from peft import LoraConfig, get_peft_model, TaskType
+      from torch.utils.data import Dataset
+
+      print("=== LoRA Fine-tuning: TinyLlama on Excel Formulas ===")
+      print(f"GPU: {torch.cuda.get_device_name(0)}")
+      print(f"VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+
+      # Load dataset from mounted ConfigMap
+      with open('/data/excel-dataset.json') as f:
+          raw_data = json.load(f)
+      print(f"Loaded {len(raw_data)} training examples")
+
+      # Load model and tokenizer
+      model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+      print(f"Loading {model_name}...")
+      tokenizer = AutoTokenizer.from_pretrained(model_name)
+      tokenizer.pad_token = tokenizer.eos_token
+
+      model = AutoModelForCausalLM.from_pretrained(
+          model_name,
+          torch_dtype=torch.float16,
+      )
+      model = model.to("cuda")
+
+      # Apply LoRA
+      lora_config = LoraConfig(
+          task_type=TaskType.CAUSAL_LM,
+          r=8,
+          lora_alpha=32,
+          lora_dropout=0.1,
+          target_modules=["q_proj", "v_proj"]
+      )
+      model = get_peft_model(model, lora_config)
+      model.print_trainable_parameters()
+
+      # Prepare dataset
+      class ExcelDataset(Dataset):
+          def __init__(self, data, tokenizer, max_length=256):
+              self.data = data
+              self.tokenizer = tokenizer
+              self.max_length = max_length
+
+          def __len__(self):
+              return len(self.data)
+
+          def __getitem__(self, idx):
+              item = self.data[idx]
+              text = f"### Instruction:\n{item['instruction']}\n\n### Response:\n{item['response']}"
+              encoding = self.tokenizer(
+                  text,
+                  truncation=True,
+                  max_length=self.max_length,
+                  padding='max_length',
+                  return_tensors='pt'
+              )
+              input_ids = encoding['input_ids'].squeeze()
+              return {
+                  'input_ids': input_ids,
+                  'attention_mask': encoding['attention_mask'].squeeze(),
+                  'labels': input_ids.clone()
+              }
+
+      dataset = ExcelDataset(raw_data, tokenizer)
+
+      # Training arguments
+      training_args = TrainingArguments(
+          output_dir='/tmp/lora-excel',
+          num_train_epochs=5,
+          per_device_train_batch_size=4,
+          gradient_accumulation_steps=2,
+          learning_rate=2e-4,
+          fp16=True,
+          logging_steps=5,
+          save_strategy='no',
+          report_to='none'
+      )
+
+      # Train
+      trainer = Trainer(
+          model=model,
+          args=training_args,
+          train_dataset=dataset,
+      )
+
+      print("Starting training...")
+      trainer.train()
+      print("Training complete!")
+
+      # Save LoRA adapter
+      model.save_pretrained('/tmp/lora-excel-adapter')
+      print("LoRA adapter saved to /tmp/lora-excel-adapter")
+
+      # Quick inference test
+      print("\n=== Testing fine-tuned model ===")
+      model.eval()
+      test_prompt = "### Instruction:\nHow do I calculate a running total in Excel?\n\n### Response:\n"
+      inputs = tokenizer(test_prompt, return_tensors="pt").to("cuda")
+      with torch.no_grad():
+          outputs = model.generate(
+              **inputs,
+              max_new_tokens=100,
+              temperature=0.7,
+              do_sample=True
+          )
+      response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+      print(response)
+      EOF

@@ -1,0 +1,22 @@
+[
+  {"instruction": "How do I sum a range of cells?", "response": "Use the SUM function: =SUM(A1:A10) to sum cells A1 through A10."},
+  {"instruction": "How do I count cells that contain a specific value?", "response": "Use COUNTIF: =COUNTIF(A1:A10,\"Sales\") to count cells containing 'Sales'."},
+  {"instruction": "How do I find the average of a range?", "response": "Use AVERAGE: =AVERAGE(A1:A10) to calculate the mean of cells A1 through A10."},
+  {"instruction": "How do I look up a value in a table?", "response": "Use VLOOKUP: =VLOOKUP(A2,B:C,2,FALSE) to find A2's value in column B and return the corresponding value from column C."},
+  {"instruction": "How do I combine text from two cells?", "response": "Use CONCATENATE or &: =A1&\" \"&B1 or =CONCATENATE(A1,\" \",B1) to join text with a space."},
+  {"instruction": "How do I return a value based on a condition?", "response": "Use IF: =IF(A1>100,\"High\",\"Low\") returns 'High' if A1 is greater than 100, otherwise 'Low'."},
+  {"instruction": "How do I sum values based on a condition?", "response": "Use SUMIF: =SUMIF(B:B,\"Sales\",A:A) sums values in column A where column B equals 'Sales'."},
+  {"instruction": "How do I get today's date?", "response": "Use TODAY(): =TODAY() returns the current date. It updates automatically every day."},
+  {"instruction": "How do I round a number to 2 decimal places?", "response": "Use ROUND: =ROUND(A1,2) rounds the value in A1 to 2 decimal places."},
+  {"instruction": "How do I find the maximum value in a range?", "response": "Use MAX: =MAX(A1:A10) returns the largest value in cells A1 through A10."},
+  {"instruction": "How do I find the minimum value in a range?", "response": "Use MIN: =MIN(A1:A10) returns the smallest value in cells A1 through A10."},
+  {"instruction": "How do I count non-empty cells?", "response": "Use COUNTA: =COUNTA(A1:A10) counts all non-empty cells in the range."},
+  {"instruction": "How do I extract text from the left side of a cell?", "response": "Use LEFT: =LEFT(A1,5) extracts the first 5 characters from the left of the text in A1."},
+  {"instruction": "How do I extract text from the right side of a cell?", "response": "Use RIGHT: =RIGHT(A1,3) extracts the last 3 characters from the right of the text in A1."},
+  {"instruction": "How do I find the position of text within a cell?", "response": "Use FIND: =FIND(\"@\",A1) returns the position of @ in the text in A1."},
+  {"instruction": "How do I convert text to uppercase?", "response": "Use UPPER: =UPPER(A1) converts all text in A1 to uppercase letters."},
+  {"instruction": "How do I remove extra spaces from text?", "response": "Use TRIM: =TRIM(A1) removes leading, trailing, and extra spaces from text in A1."},
+  {"instruction": "How do I calculate the number of days between two dates?", "response": "Use DATEDIF or subtraction: =DATEDIF(A1,B1,\"D\") or =B1-A1 to get the number of days between two dates."},
+  {"instruction": "How do I look up a value using both row and column?", "response": "Use INDEX MATCH: =INDEX(C:C,MATCH(A2,B:B,0)) finds A2 in column B and returns the corresponding value from column C."},
+  {"instruction": "How do I sum values meeting multiple conditions?", "response": "Use SUMIFS: =SUMIFS(A:A,B:B,\"Sales\",C:C,\">100\") sums column A where B is 'Sales' AND C is greater than 100."}
+]

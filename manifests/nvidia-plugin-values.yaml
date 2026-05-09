@@ -1,0 +1,17 @@
+tolerations:
+  - key: sku
+    operator: Equal
+    value: gpu
+    effect: NoSchedule
+
+nodeSelector:
+  accelerator: nvidia
+
+config:
+  name: time-slicing-config
+
+# Tell the chart to create the ConfigMap volume mount
+devicePlugin:
+  config:
+    name: time-slicing-config
+    default: "any"
