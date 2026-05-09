@@ -1,4 +1,6 @@
-# What you should know before starting with this project?
+# AKS GPU Lab 
+
+## What you should know before starting with this project?
 
 1. Kubernetes
     * 1.1 Should know k8s/AKS
@@ -22,42 +24,16 @@
 - VRAM requirement: ~5.5 GB
 - Fits in T4 (15GB)?: Fits comfortably
 - Tokens/sec on T4: ~20 tok/s
+- **Cost Running the T4 GPU:** A `Standard_NC4as_T4_v3` GPU node costs ~$0.50/hr.
 
 #### About the model TinyLlama:
 
 - TinyLlama is a 1.1 billion parameter language model released by researchers at Singapore University. 
 - It was trained on 3 trillion tokens using the same architecture as Meta's Llama 2 — but compressed down to a tiny size.
 
-#### The objective is to deploy the LLM model to GPU over AKS and test the results.
-
---- 
-
-# AKS GPU Lab
-
-End-to-end GPU infrastructure lab on Azure Kubernetes Service — covering time-slicing, inference serving, benchmarking, LoRA fine-tuning, and production observability.
+#### The objective is to deploy the LLM model to GPU over AKS and test the results. End-to-end GPU infrastructure on Azure Kubernetes Service — covering time-slicing, inference serving, benchmarking, LoRA fine-tuning, and production observability.
 
 **Stack:** AKS · Ubuntu 22.04 · NVIDIA T4 · vLLM · PyTorch · DCGM · Prometheus · Grafana
-
->  **Cost Running the T4 GPU:** A `Standard_NC4as_T4_v3` GPU node costs ~$0.50/hr.
->  #### Scale down when not in use:
->  az aks nodepool scale --resource-group gpu-aks-rg --cluster-name gpu-aks --name gpupool --node-count 0
-
----
-
-## Table of Contents
-
-- [Phase 1 — Infrastructure](#phase-1--infrastructure)
-- [Phase 2 — GPU Time-Slicing](#phase-2--gpu-time-slicing)
-- [Phase 3 — Verification](#phase-3--verification)
-- [Phase 4 — vLLM Inference](#phase-4--vllm-inference)
-- [Phase 5 — Batched Inference](#phase-5--batched-inference)
-- [Phase 6 — PyTorch Benchmark](#phase-6--pytorch-benchmark)
-- [Phase 7 — OOM Stress Test](#phase-7--oom-stress-test)
-- [Phase 8 — Observability Pipeline](#phase-8--observability-pipeline)
-- [Phase 9 — How a Pod Gets to the GPU](#phase-9--how-a-pod-gets-to-the-gpu)
-- [Phase 10 — LoRA Fine-Tuning](#phase-10--lora-fine-tuning)
-- [Summary](#summary)
-- [Cleanup](#cleanup)
 
 ---
 
