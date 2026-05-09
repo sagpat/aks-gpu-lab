@@ -53,9 +53,9 @@ End-to-end GPU infrastructure lab on Azure Kubernetes Service — covering time-
 - [Phase 5 — Batched Inference](#phase-5--batched-inference)
 - [Phase 6 — PyTorch Benchmark](#phase-6--pytorch-benchmark)
 - [Phase 7 — OOM Stress Test](#phase-7--oom-stress-test)
-- [Phase 8 — Observability Pipeline](#phase-9--observability-pipeline)
-- [Phase 9 — How a Pod Gets to the GPU](#phase-10--how-a-pod-gets-to-the-gpu)
-- [Phase 10 — LoRA Fine-Tuning](#phase-8--lora-fine-tuning)
+- [Phase 8 — Observability Pipeline](#phase-8--observability-pipeline)
+- [Phase 9 — How a Pod Gets to the GPU](#phase-9--how-a-pod-gets-to-the-gpu)
+- [Phase 10 — LoRA Fine-Tuning](#phase-10--lora-fine-tuning)
 - [Summary](#summary)
 - [Cleanup](#cleanup)
 
