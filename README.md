@@ -395,6 +395,13 @@ Tensor Core utilization should jump from ~38–41% (single inference) to ~72–7
 
 ## Phase 7 — PyTorch Benchmark
 
+- This code in the `args` in `pytorch-benchmark.yaml` does the GPU stress test. It tests the physical hardware (the NVIDIA GPU).
+- The args block runs a raw Python script that forces the GPU to work at 100% capacity.
+- **The Math:** It creates two massive matrices (4096 x 4096) filled with random numbers.
+- **The Precision:** It uses float16, which matches the data type you set for vLLM earlier.
+- **The Loop:** It runs a while loop for exactly 180 seconds (3 minutes).Inside, it performs torch.matmul(a, b) (Matrix Multiplication) over and over.
+- **torch.cuda.synchronize():** GPU tasks are "lazy" (asynchronous). This command forces the script to wait until the GPU actually finishes the last calculation before printing "Done."
+
 Apply `pytorch-benchmark.yaml` (see `/manifests` folder).
 
 ```bash
